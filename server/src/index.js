@@ -44,8 +44,9 @@ SimpleSignalServer.prototype._onDiscover = function (socket, discoveryData) {
 }
 
 SimpleSignalServer.prototype._onOffer = function (socket, { sessionId, signal, target, metadata }) {
-  const request = { initiator: socket.clientId, target, metadata, socket }
+  const request = { initiator: socket.clientId, target, metadata, socket, sessionId, signal }
   request.forward = (target=request.target, metadata=request.metadata) => {
+    (console.error || console.log)("Please manually define the forward function using io.to, or Redis will not work and the socket node won't scale.")
     if (!this._sockets[target]) return
     this._sockets[target].emit('simple-signal[offer]', {
       initiator: socket.clientId, sessionId, signal, metadata
